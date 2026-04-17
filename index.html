@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#0A1628"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>Wayfind Busan</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Nunito+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #F7F8FA;
+  --bg2: #FFFFFF;
+  --bg3: #EEF0F4;
+  --card: #FFFFFF;
+  --card2: #F2F4F7;
+  --accent: #00B894;
+  --accent2: #009D80;
+  --warn: #FF6348;
+  --warn2: #E5522E;
+  --blue: #2D6BE4;
+  --blue2: #1A54C8;
+  --text: #1A1D23;
+  --text2: #5A6070;
+  --text3: #9BA3B0;
+  --border: rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --font: 'Nunito', sans-serif;
+  --font2: 'Nunito Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; background: #F7F8FA; }
+body { font-family: var(--font); color: var(--text); }
+
+/* APP SHELL */
+#app {
+  width: 100%;
+  max-width: 430px;
+  height: 100vh;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  background: #F7F8FA;
+}
+
+/* SCREENS */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease;
+}
+.screen.active { display: flex; }
+.screen.slide-in { animation: slideIn 0.35s cubic-bezier(0.4,0,0.2,1) forwards; }
+.screen.slide-out { animation: slideOut 0.35s cubic-bezier(0.4,0,0.2,1) forwards; }
+.screen.slide-back { animation: slideBack 0.35s cubic-bezier(0.4,0,0.2,1) forwards; }
+@keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+@keyframes slideOut { from{transform:translateX(0);opacity:1} to{transform:translateX(-30%);opacity:0} }
+@keyframes slideBack { from{transform:translateX(-30%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+/* ========== SCREEN 1: LANGUAGE ========== */
+#screen-lang {
+  background: #F7F8FA;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1.5rem;
+}
+.lang-logo {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.lang-logo .logo-wave {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--accent), var(--blue));
+  border-radius: 20px;
+  margin: 0 auto 1rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+}
+.lang-logo h1 {
+  font-size: 26px; font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+.lang-logo p {
+  font-family: var(--font2);
+  font-size: 13px; color: var(--text2);
+  margin-top: 4px;
+}
+.lang-label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.lang-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  max-width: 340px;
+}
+.lang-btn {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 10px;
+  justify-content: flex-start;
+}
+.lang-btn:active { transform: scale(0.97); background: var(--bg3); }
+.lang-btn.selected { border-color: var(--accent); background: rgba(0,184,148,0.07); }
+.lang-flag { font-size: 22px; line-height: 1; }
+.lang-info { text-align: left; }
+.lang-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.lang-native { font-size: 11px; color: var(--text2); font-family: var(--font2); }
+.lang-continue {
+  margin-top: 1.5rem;
+  width: 100%; max-width: 340px;
+  background: var(--accent);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.lang-continue:active { transform: scale(0.98); background: var(--accent2); }
+
+/* ========== SCREEN 2: HOME (EXPLORE) ========== */
+#screen-home {
+  background: #F7F8FA;
+}
+.home-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 80px;
+}
+.home-scroll::-webkit-scrollbar { display: none; }
+
+.top-bar {
+  padding: 52px 18px 16px;
+  background: #F7F8FA;
+  position: relative;
+}
+.top-bar-inner {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.top-loc {
+  display: flex; align-items: center; gap: 6px;
+}
+.loc-dot {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: locpulse 2s ease-in-out infinite;
+}
+@keyframes locpulse { 0%,100%{box-shadow:0 0 0 0 rgba(0,184,148,0.4)} 50%{box-shadow:0 0 0 6px rgba(0,184,148,0)} }
+.loc-text {
+  font-size: 13px; font-weight: 600; color: var(--text2);
+}
+.top-bar h2 {
+  font-size: 22px; font-weight: 800;
+  color: var(--text);
+  margin-top: 6px;
+  letter-spacing: -0.3px;
+}
+.nextpin-btn {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  display: flex; align-items: center; gap: 6px;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 13px; font-weight: 700;
+  color: var(--blue);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nextpin-btn:active { transform: scale(0.96); }
+.nextpin-icon { font-size: 14px; }
+
+/* ALERT BANNER */
+.alert-banner {
+  margin: 0 18px 16px;
+  background: linear-gradient(135deg, #FF6B35 0%, #E84040 100%);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.alert-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.06);
+  border-radius: var(--radius-sm);
+}
+.alert-banner:active { opacity: 0.9; }
+.alert-left { display: flex; align-items: center; gap: 10px; }
+.alert-pulse {
+  width: 10px; height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: alertpulse 1.2s ease-in-out infinite;
+}
+@keyframes alertpulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.alert-text { font-size: 14px; font-weight: 700; color: #fff; }
+.alert-sub { font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 1px; font-family: var(--font2); }
+.alert-route-btn {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px; font-weight: 700;
+  color: #fff;
+  font-family: var(--font);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* SECTION HEADER */
+.sec-header {
+  padding: 8px 18px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sec-title { font-size: 16px; font-weight: 800; color: var(--text); }
+.sec-see-all { font-size: 12px; font-weight: 600; color: var(--accent); }
+
+/* HORIZONTAL SCROLL */
+.h-scroll {
+  display: flex;
+  gap: 12px;
+  padding: 0 18px 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.h-scroll::-webkit-scrollbar { display: none; }
+
+/* PLACE CARDS (horizontal) */
+.place-card-h {
+  flex-shrink: 0;
+  width: 148px;
+  background: #FFFFFF;
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.place-card-h:active { transform: scale(0.96); }
+.place-img {
+  width: 100%; height: 100px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  background: var(--bg3);
+  position: relative;
+}
+.place-img-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 40px;
+  background: linear-gradient(transparent, rgba(247,248,250,0.5));
+}
+.place-img-badge {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(0,184,148,0.92);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 10px; font-weight: 700; color: #fff;
+}
+.place-card-body { padding: 10px 10px 12px; }
+.place-card-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.3; }
+.place-card-meta {
+  display: flex; align-items: center; gap: 6px; margin-top: 5px;
+}
+.place-star { font-size: 11px; color: #FFB800; }
+.place-dist { font-size: 11px; color: var(--text2); font-family: var(--font2); }
+
+/* VERTICAL PLACE LIST */
+.place-list { padding: 0 18px; display: flex; flex-direction: column; gap: 10px; }
+.place-row {
+  background: #FFFFFF;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.place-row:active { transform: scale(0.98); background: var(--bg3); }
+.place-row-icon {
+  width: 48px; height: 48px;
+  background: var(--bg3);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.place-row-info { flex: 1; min-width: 0; }
+.place-row-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.place-row-sub { font-size: 12px; color: var(--text2); margin-top: 2px; font-family: var(--font2); }
+.place-row-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.place-row-dist {
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  background: rgba(0,184,148,0.1);
+  border-radius: 6px; padding: 2px 8px;
+}
+.place-row-tag {
+  font-size: 10px; color: var(--text3);
+  font-family: var(--font2);
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: #FFFFFF;
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 8px 0 20px;
+  z-index: 50;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+}
+.nav-item {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 4px 0;
+}
+.nav-item:active { transform: scale(0.92); }
+.nav-icon { font-size: 20px; line-height: 1; }
+.nav-label { font-size: 10px; font-weight: 600; color: var(--text3); }
+.nav-item.active .nav-label { color: var(--accent); }
+.nav-item.active .nav-icon-dot {
+  display: block;
+  width: 4px; height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin: 0 auto;
+}
+.nav-icon-dot { display: none; }
+
+/* ========== SCREEN 3: MAP / ROUTE ========== */
+#screen-map {
+  background: #F7F8FA;
+}
+.map-header {
+  padding: 52px 18px 14px;
+  background: #F7F8FA;
+  display: flex; align-items: center; gap: 12px;
+}
+.back-btn {
+  width: 36px; height: 36px;
+  background: #FFFFFF;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  font-size: 16px;
+  color: var(--text);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.back-btn:active { transform: scale(0.9); }
+.map-header-info { flex: 1; min-width: 0; }
+.map-header-info h3 { font-size: 17px; font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.map-header-info p { font-size: 12px; color: var(--text2); font-family: var(--font2); }
+
+.map-container {
+  margin: 0 18px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1.5px solid var(--border2);
+  flex-shrink: 0;
+  background: #1a2e4a;
+  height: 260px;
+  position: relative;
+}
+.map-svg-wrap {
+  width: 100%; height: 100%;
+}
+.map-you-label {
+  position: absolute; bottom: 10px; left: 10px;
+  background: rgba(0,201,167,0.9);
+  border-radius: 6px; padding: 4px 8px;
+  font-size: 11px; font-weight: 700; color: #0A1628;
+}
+.map-dest-label {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(255,107,53,0.9);
+  border-radius: 6px; padding: 4px 8px;
+  font-size: 11px; font-weight: 700; color: #fff;
+}
+
+.route-info {
+  margin: 14px 18px;
+  background: #FFFFFF;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex; gap: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.route-stat { flex: 1; text-align: center; }
+.route-stat-val { font-size: 20px; font-weight: 800; color: var(--text); }
+.route-stat-lbl { font-size: 11px; color: var(--text2); margin-top: 2px; font-family: var(--font2); }
+.route-divider { width: 1px; background: var(--border2); }
+
+.uphill-tag {
+  margin: 0 18px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  background: rgba(45,107,228,0.07);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(45,107,228,0.15);
+}
+.uphill-dot { width: 10px; height: 10px; background: var(--blue); border-radius: 50%; flex-shrink: 0; }
+.uphill-text { font-size: 13px; font-weight: 600; color: var(--blue); }
+
+.open-gmaps-btn {
+  margin: 14px 18px 0;
+  width: calc(100% - 36px);
+  background: var(--accent);
+  color: #0A1628;
+  border: none; border-radius: var(--radius-sm);
+  padding: 15px;
+  font-size: 15px; font-weight: 800;
+  font-family: var(--font);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all 0.2s;
+}
+.open-gmaps-btn:active { transform: scale(0.98); background: var(--accent2); }
+
+/* ========== SCREEN 4: NEARBY PINS ========== */
+#screen-pins {
+  background: #F7F8FA;
+}
+.pins-header {
+  padding: 52px 18px 14px;
+  display: flex; align-items: center; gap: 12px;
+  background: #F7F8FA;
+}
+.pins-header h2 { font-size: 20px; font-weight: 800; color: var(--text); flex: 1; }
+.pins-map-area {
+  margin: 0 18px;
+  height: 300px;
+  background: #E8EFF8;
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  position: relative;
+  overflow: hidden;
+}
+.pin-dot {
+  position: absolute;
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pin-dot:active { transform: scale(0.9); }
+.pin-dot .pin-circle {
+  background: #FFFFFF;
+  border: 2.5px solid var(--blue);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 10px;
+  font-family: var(--font2);
+  transition: all 0.3s;
+}
+.pin-dot.nearest .pin-circle {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.pin-dot .pin-stem {
+  width: 2px;
+  background: var(--blue);
+  margin-top: -1px;
+}
+.pin-dot.nearest .pin-stem { background: var(--accent); }
+.pin-dot .pin-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text2);
+  white-space: nowrap;
+  margin-top: 2px;
+  font-family: var(--font2);
+}
+.pin-dot.nearest .pin-label { color: var(--accent); }
+
+.you-marker {
+  position: absolute;
+  width: 16px; height: 16px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 3px solid rgba(0,201,167,0.3);
+  box-shadow: 0 0 0 6px rgba(0,201,167,0.1);
+}
+
+.pins-legend {
+  margin: 12px 18px;
+  padding: 12px 14px;
+  background: #FFFFFF;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-family: var(--font2);
+  color: var(--text2);
+  display: flex; align-items: center; gap: 8px;
+}
+.legend-large {
+  width: 14px; height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pins-list { padding: 0 18px; display: flex; flex-direction: column; gap: 8px; }
+.pin-list-item {
+  background: #FFFFFF;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.pin-list-item:active { transform: scale(0.98); }
+.pin-list-item.nearest-item { border-color: var(--accent); background: rgba(0,184,148,0.05); }
+.pin-num {
+  width: 32px; height: 32px;
+  background: var(--bg3);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--blue);
+  flex-shrink: 0;
+}
+.pin-list-item.nearest-item .pin-num { background: rgba(0,184,148,0.12); color: var(--accent); }
+.pin-info h5 { font-size: 13px; font-weight: 700; color: var(--text); }
+.pin-info p { font-size: 11px; color: var(--text2); font-family: var(--font2); }
+.nearest-badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ========== SCREEN 5: PLACE DETAIL ========== */
+#screen-place {
+  background: #F7F8FA;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#screen-place::-webkit-scrollbar { display: none; }
+.place-hero {
+  height: 220px;
+  background: #EEF0F4;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 64px;
+  flex-shrink: 0;
+}
+.place-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(transparent 40%, #F7F8FA 100%);
+}
+.place-hero-back {
+  position: absolute; top: 52px; left: 18px;
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.88);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text);
+  z-index: 2;
+  border: 1px solid var(--border2);
+  transition: all 0.2s;
+}
+.place-hero-back:active { transform: scale(0.9); }
+.place-body { padding: 0 18px 100px; }
+.place-name { font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+.place-category {
+  display: inline-block;
+  background: rgba(0,201,167,0.15);
+  color: var(--accent);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px; font-weight: 700;
+  margin-top: 6px;
+}
+.place-stars {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 10px;
+}
+.stars-row { font-size: 14px; color: #FFB800; letter-spacing: 1px; }
+.stars-val { font-size: 13px; font-weight: 700; color: var(--text); }
+.stars-count { font-size: 12px; color: var(--text2); font-family: var(--font2); }
+
+.place-meta-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-top: 14px;
+}
+.meta-box {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  border: 1px solid var(--border);
+}
+.meta-box-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; font-family: var(--font2); }
+.meta-box-val { font-size: 14px; font-weight: 700; color: var(--text); margin-top: 3px; }
+
+.sec-title-sm { font-size: 15px; font-weight: 800; color: var(--text); margin: 18px 0 10px; }
+
+.image-gallery {
+  display: flex; gap: 8px; overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -18px; padding: 0 18px;
+}
+.image-gallery::-webkit-scrollbar { display: none; }
+.gallery-item {
+  flex-shrink: 0;
+  width: 120px; height: 90px;
+  background: var(--bg3);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+  border: 1px solid var(--border);
+}
+
+.menu-list { display: flex; flex-direction: column; gap: 8px; }
+.menu-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.menu-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.menu-desc { font-size: 11px; color: var(--text2); font-family: var(--font2); margin-top: 2px; }
+.menu-price { font-size: 14px; font-weight: 800; color: var(--accent); white-space: nowrap; margin-left: 12px; }
+
+.get-directions-btn {
+  position: fixed;
+  bottom: 24px;
+  left: 50%; transform: translateX(-50%);
+  width: calc(100% - 36px);
+  max-width: 394px;
+  background: var(--warn);
+  color: #fff;
+  border: none; border-radius: var(--radius-sm);
+  padding: 15px;
+  font-size: 15px; font-weight: 800;
+  font-family: var(--font);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all 0.2s;
+  z-index: 10;
+  box-shadow: 0 4px 24px rgba(255,107,53,0.35);
+}
+.get-directions-btn:active { transform: translateX(-50%) scale(0.98); }
+
+/* CROWD BADGE */
+.crowd-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  border-radius: 6px; padding: 4px 10px;
+  font-size: 12px; font-weight: 700;
+  font-family: var(--font2);
+}
+.crowd-low { background: rgba(0,201,167,0.15); color: var(--accent); }
+.crowd-mod { background: rgba(255,184,0,0.15); color: #FFB800; }
+.crowd-high { background: rgba(255,107,53,0.15); color: var(--warn); }
+
+/* MAP GRID LINES (decorative) */
+.map-grid {
+  position: absolute; inset: 0;
+  opacity: 0.15;
+}
+
+/* TRANSLATION DATA */
+[data-t] { transition: opacity 0.2s; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ===== SCREEN 1: LANGUAGE SELECTION ===== -->
+<div class="screen active" id="screen-lang">
+  <div class="lang-logo">
+    <div class="logo-wave">🌊</div>
+    <h1>Wayfind Busan</h1>
+    <p>Scan · Explore · Discover</p>
+  </div>
+  <div class="lang-label" data-t="choose_lang">Choose your language</div>
+  <div class="lang-grid">
+    <div class="lang-btn" onclick="selectLang('en')" id="lang-en">
+      <span class="lang-flag">🇺🇸</span>
+      <div class="lang-info">
+        <div class="lang-name">English</div>
+        <div class="lang-native">English</div>
+      </div>
+    </div>
+    <div class="lang-btn" onclick="selectLang('ko')" id="lang-ko">
+      <span class="lang-flag">🇰🇷</span>
+      <div class="lang-info">
+        <div class="lang-name">Korean</div>
+        <div class="lang-native">한국어</div>
+      </div>
+    </div>
+    <div class="lang-btn" onclick="selectLang('ja')" id="lang-ja">
+      <span class="lang-flag">🇯🇵</span>
+      <div class="lang-info">
+        <div class="lang-name">Japanese</div>
+        <div class="lang-native">日本語</div>
+      </div>
+    </div>
+    <div class="lang-btn" onclick="selectLang('zh')" id="lang-zh">
+      <span class="lang-flag">🇨🇳</span>
+      <div class="lang-info">
+        <div class="lang-name">Chinese</div>
+        <div class="lang-native">中文</div>
+      </div>
+    </div>
+    <div class="lang-btn" onclick="selectLang('de')" id="lang-de">
+      <span class="lang-flag">🇩🇪</span>
+      <div class="lang-info">
+        <div class="lang-name">German</div>
+        <div class="lang-native">Deutsch</div>
+      </div>
+    </div>
+    <div class="lang-btn" onclick="selectLang('fr')" id="lang-fr">
+      <span class="lang-flag">🇫🇷</span>
+      <div class="lang-info">
+        <div class="lang-name">French</div>
+        <div class="lang-native">Français</div>
+      </div>
+    </div>
+  </div>
+  <button class="lang-continue" id="lang-continue-btn" onclick="goHome()" disabled style="opacity:0.4" data-t="continue">Continue</button>
+</div>
+
+<!-- ===== SCREEN 2: HOME / EXPLORE ===== -->
+<div class="screen" id="screen-home">
+  <div class="home-scroll">
+    <div class="top-bar">
+      <div class="top-bar-inner">
+        <div class="top-loc">
+          <div class="loc-dot"></div>
+          <span class="loc-text" data-t="near">Near Gwangalli Beach Pole #07</span>
+        </div>
+        <div class="nextpin-btn" onclick="showPins()">
+          <span class="nextpin-icon">📍</span>
+          <span data-t="next_pin">Next Pin</span>
+        </div>
+      </div>
+      <h2 data-t="explore_title">Explore Nearby</h2>
+    </div>
+
+    <!-- EVENT ALERT -->
+    <div class="alert-banner" onclick="showRoute('fireworks')">
+      <div class="alert-left">
+        <div class="alert-pulse"></div>
+        <div>
+          <div class="alert-text" data-t="alert_text">🎆 Gwangan Bridge Fireworks</div>
+          <div class="alert-sub" data-t="alert_sub">Starts in 10 mins · 0.3 km away</div>
+        </div>
+      </div>
+      <div class="alert-route-btn" data-t="get_route">&gt;&gt; Get Route</div>
+    </div>
+
+    <!-- FOOD -->
+    <div class="sec-header">
+      <span class="sec-title" data-t="food_title">🍜 Food Nearby</span>
+      <span class="sec-see-all" data-t="see_all">See all</span>
+    </div>
+    <div class="h-scroll">
+      <div class="place-card-h" onclick="showPlace('jagalchi')">
+        <div class="place-img">🐟<div class="place-img-overlay"></div><div class="place-img-badge">OPEN</div></div>
+        <div class="place-card-body">
+          <div class="place-card-name">Jagalchi Fish Market</div>
+          <div class="place-card-meta"><span class="place-star">★ 4.7</span><span class="place-dist">· 1.2 km</span></div>
+        </div>
+      </div>
+      <div class="place-card-h" onclick="showPlace('milmyeon')">
+        <div class="place-img">🍜<div class="place-img-overlay"></div><div class="place-img-badge">OPEN</div></div>
+        <div class="place-card-body">
+          <div class="place-card-name">Gaya Milmyeon</div>
+          <div class="place-card-meta"><span class="place-star">★ 4.8</span><span class="place-dist">· 0.7 km</span></div>
+        </div>
+      </div>
+      <div class="place-card-h" onclick="showPlace('pojangmacha')">
+        <div class="place-img">🥘<div class="place-img-overlay"></div><div class="place-img-badge">HOT</div></div>
+        <div class="place-card-body">
+          <div class="place-card-name">Gwangalli Pojangmacha</div>
+          <div class="place-card-meta"><span class="place-star">★ 4.5</span><span class="place-dist">· 0.2 km</span></div>
+        </div>
+      </div>
+      <div class="place-card-h" onclick="showPlace('tongyeong')">
+        <div class="place-img">🦪<div class="place-img-overlay"></div></div>
+        <div class="place-card-body">
+          <div class="place-card-name">Tongyeong Oyster House</div>
+          <div class="place-card-meta"><span class="place-star">★ 4.6</span><span class="place-dist">· 1.8 km</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEACHES & ATTRACTIONS -->
+    <div class="sec-header" style="margin-top:10px;">
+      <span class="sec-title" data-t="attractions_title">🏖 Beaches & Attractions</span>
+    </div>
+    <div class="place-list">
+      <div class="place-row" onclick="showPlace('haeundae')">
+        <div class="place-row-icon">🏖</div>
+        <div class="place-row-info">
+          <div class="place-row-name">Haeundae Beach</div>
+          <div class="place-row-sub" data-t="haeundae_sub">Crowd: Moderate · Wave: 0.5m</div>
+        </div>
+        <div class="place-row-right">
+          <div class="place-row-dist">3.1 km</div>
+          <div class="place-row-tag" data-t="beach_tag">Beach</div>
+        </div>
+      </div>
+      <div class="place-row" onclick="showPlace('gamcheon')">
+        <div class="place-row-icon">🎨</div>
+        <div class="place-row-info">
+          <div class="place-row-name">Gamcheon Culture Village</div>
+          <div class="place-row-sub" data-t="gamcheon_sub">Art · History · Cafes</div>
+        </div>
+        <div class="place-row-right">
+          <div class="place-row-dist">4.2 km</div>
+          <div class="place-row-tag" data-t="culture_tag">Culture</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEMPLES -->
+    <div class="sec-header" style="margin-top:10px;">
+      <span class="sec-title" data-t="temple_title">⛩ Temples</span>
+    </div>
+    <div class="place-list">
+      <div class="place-row" onclick="showPlace('haedong')">
+        <div class="place-row-icon">⛩</div>
+        <div class="place-row-info">
+          <div class="place-row-name">Haedong Yonggungsa</div>
+          <div class="place-row-sub" data-t="haedong_sub">Coastal sea temple · Open 5am–9pm</div>
+        </div>
+        <div class="place-row-right">
+          <div class="place-row-dist">4.8 km</div>
+          <div class="place-row-tag" data-t="temple_tag">Temple</div>
+        </div>
+      </div>
+      <div class="place-row" onclick="showPlace('beomeosa')">
+        <div class="place-row-icon">🏯</div>
+        <div class="place-row-info">
+          <div class="place-row-name">Beomeosa Temple</div>
+          <div class="place-row-sub" data-t="beomeosa_sub">Historic mountain temple · 1400 yrs old</div>
+        </div>
+        <div class="place-row-right">
+          <div class="place-row-dist">4.9 km</div>
+          <div class="place-row-tag" data-t="temple_tag">Temple</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKETS -->
+    <div class="sec-header" style="margin-top:10px;">
+      <span class="sec-title" data-t="market_title">🛒 Markets</span>
+    </div>
+    <div class="place-list" style="margin-bottom:12px;">
+      <div class="place-row" onclick="showPlace('gukje')">
+        <div class="place-row-icon">🛍</div>
+        <div class="place-row-info">
+          <div class="place-row-name">Gukje International Market</div>
+          <div class="place-row-sub" data-t="gukje_sub">Street food · Goods · Open till 8pm</div>
+        </div>
+        <div class="place-row-right">
+          <div class="place-row-dist">2.3 km</div>
+          <div class="place-row-tag" data-t="market_tag">Market</div>
+        </div>
+      </div>
+      <div class="place-row" onclick="showPlace('biff')">
+        <div class="place-row-icon">🎬</div>
+        <div class="place-row-info">
+          <div class="place-row-name">BIFF Square</div>
+          <div class="place-row-sub" data-t="biff_sub">Film, street snacks · Night market</div>
+        </div>
+        <div class="place-row-right">
+          <div class="place-row-dist">2.8 km</div>
+          <div class="place-row-tag" data-t="market_tag">Market</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item active">
+      <div class="nav-icon">🧭</div>
+      <div class="nav-icon-dot"></div>
+      <div class="nav-label" data-t="nav_explore">Explore</div>
+    </div>
+    <div class="nav-item" onclick="showPins()">
+      <div class="nav-icon">📍</div>
+      <div class="nav-label" data-t="nav_pins">Poles</div>
+    </div>
+    <div class="nav-item" onclick="showRoute('self')">
+      <div class="nav-icon">🗺</div>
+      <div class="nav-label" data-t="nav_map">Map</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">🌊</div>
+      <div class="nav-label" data-t="nav_safety">Safety</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 3: MAP / ROUTE ===== -->
+<div class="screen" id="screen-map">
+  <div class="map-header">
+    <div class="back-btn" onclick="goBack('screen-map')">←</div>
+    <div class="map-header-info">
+      <h3 id="map-title">Route to Fireworks</h3>
+      <p id="map-subtitle">From Pole #07 · Gwangalli Beach</p>
+    </div>
+  </div>
+
+  <div class="map-container">
+    <svg class="map-svg-wrap" viewBox="0 0 390 260" preserveAspectRatio="xMidYMid slice">
+      <!-- Map BG layers -->
+      <rect width="390" height="260" fill="#1a2e4a"/>
+      <!-- Grid lines -->
+      <line x1="0" y1="65" x2="390" y2="65" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+      <line x1="0" y1="130" x2="390" y2="130" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+      <line x1="0" y1="195" x2="390" y2="195" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+      <line x1="97" y1="0" x2="97" y2="260" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+      <line x1="195" y1="0" x2="195" y2="260" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+      <line x1="293" y1="0" x2="293" y2="260" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+      <!-- Streets -->
+      <rect x="0" y="55" width="390" height="20" fill="#1e3550" rx="0"/>
+      <rect x="0" y="120" width="390" height="18" fill="#1e3550" rx="0"/>
+      <rect x="80" y="0" width="18" height="260" fill="#1e3550" rx="0"/>
+      <rect x="170" y="0" width="16" height="260" fill="#1e3550" rx="0"/>
+      <rect x="280" y="0" width="20" height="260" fill="#1e3550" rx="0"/>
+      <!-- Blocks / buildings -->
+      <rect x="20" y="20" width="55" height="32" fill="#22364e" rx="4"/>
+      <rect x="100" y="20" width="65" height="32" fill="#22364e" rx="4"/>
+      <rect x="190" y="20" width="85" height="32" fill="#22364e" rx="4"/>
+      <rect x="300" y="20" width="85" height="32" fill="#22364e" rx="4"/>
+      <rect x="20" y="80" width="55" height="36" fill="#22364e" rx="4"/>
+      <rect x="100" y="80" width="65" height="36" fill="#22364e" rx="4"/>
+      <rect x="190" y="80" width="85" height="36" fill="#22364e" rx="4"/>
+      <rect x="300" y="80" width="85" height="36" fill="#22364e" rx="4"/>
+      <rect x="20" y="142" width="55" height="36" fill="#22364e" rx="4"/>
+      <rect x="100" y="142" width="65" height="50" fill="#22364e" rx="4"/>
+      <rect x="190" y="142" width="85" height="50" fill="#22364e" rx="4"/>
+      <rect x="300" y="142" width="85" height="50" fill="#22364e" rx="4"/>
+      <rect x="20" y="195" width="390" height="65" fill="#162840" rx="0"/>
+      <!-- Sea / water at bottom -->
+      <rect x="0" y="215" width="390" height="45" fill="#0e2238"/>
+      <text x="195" y="240" fill="#1a3a5c" font-size="11" text-anchor="middle" font-family="sans-serif">GWANGALLI SEA</text>
+      <!-- Route path (blue thick) -->
+      <polyline points="60,230 60,130 60,65 170,65 170,20 280,20 280,65 340,65 340,130 280,130 280,160" 
+        fill="none" stroke="#4A9EFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+      <!-- Route animated dashes -->
+      <polyline points="60,230 60,130 60,65 170,65 170,20 280,20 280,65 340,65 340,130 280,130 280,160" 
+        fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-dasharray="8,12" opacity="0.5">
+        <animate attributeName="stroke-dashoffset" values="0;-200" dur="3s" repeatCount="indefinite"/>
+      </polyline>
+      <!-- Turn dots -->
+      <circle cx="60" cy="65" r="6" fill="#4A9EFF"/>
+      <circle cx="170" cy="65" r="6" fill="#4A9EFF"/>
+      <circle cx="280" cy="65" r="6" fill="#4A9EFF"/>
+      <circle cx="340" cy="65" r="6" fill="#4A9EFF"/>
+      <circle cx="340" cy="130" r="6" fill="#4A9EFF"/>
+      <circle cx="280" cy="130" r="6" fill="#4A9EFF"/>
+      <!-- YOU marker -->
+      <circle cx="60" cy="230" r="12" fill="#00C9A7" opacity="0.2"/>
+      <circle cx="60" cy="230" r="8" fill="#00C9A7" opacity="0.4"/>
+      <circle cx="60" cy="230" r="5" fill="#00C9A7"/>
+      <!-- DESTINATION marker -->
+      <circle cx="280" cy="160" r="10" fill="#FF6B35" opacity="0.3"/>
+      <circle cx="280" cy="160" r="6" fill="#FF6B35"/>
+      <text x="280" y="148" fill="#FF6B35" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="bold">DEST</text>
+    </svg>
+    <div class="map-you-label">📍 You</div>
+    <div class="map-dest-label">🎆 Fireworks</div>
+  </div>
+
+  <div class="route-info">
+    <div class="route-stat">
+      <div class="route-stat-val" id="route-walk">15 min</div>
+      <div class="route-stat-lbl" data-t="walk_time">Walk</div>
+    </div>
+    <div class="route-divider"></div>
+    <div class="route-stat">
+      <div class="route-stat-val" id="route-dist">1.1 km</div>
+      <div class="route-stat-lbl" data-t="distance">Distance</div>
+    </div>
+    <div class="route-divider"></div>
+    <div class="route-stat">
+      <div class="route-stat-val" id="route-crowd"><span class="crowd-badge crowd-mod" data-t="crowd_mod">Moderate</span></div>
+      <div class="route-stat-lbl" data-t="crowd_lbl">Crowd</div>
+    </div>
+  </div>
+
+  <div class="uphill-tag">
+    <div class="uphill-dot"></div>
+    <span class="uphill-text" id="uphill-info" data-t="uphill_info">🔵 Uphill walks: 2 · Last bus: 22:30</span>
+  </div>
+
+  <button class="open-gmaps-btn" onclick="openGmaps()">
+    <span>🗺</span> <span data-t="open_maps">Open in Google Maps</span>
+  </button>
+</div>
+
+<!-- ===== SCREEN 4: NEARBY PINS ===== -->
+<div class="screen" id="screen-pins">
+  <div class="pins-header">
+    <div class="back-btn" onclick="goBack('screen-pins')">←</div>
+    <h2 data-t="nearby_poles">Nearby Poles</h2>
+  </div>
+
+  <div class="pins-map-area">
+    <!-- Background map -->
+    <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 390 300" preserveAspectRatio="xMidYMid slice">
+      <rect width="390" height="300" fill="#1a2e4a"/>
+      <line x1="0" y1="75" x2="390" y2="75" stroke="#fff" stroke-opacity="0.05" stroke-width="1"/>
+      <line x1="0" y1="150" x2="390" y2="150" stroke="#fff" stroke-opacity="0.05" stroke-width="1"/>
+      <line x1="0" y1="225" x2="390" y2="225" stroke="#fff" stroke-opacity="0.05" stroke-width="1"/>
+      <line x1="97" y1="0" x2="97" y2="300" stroke="#fff" stroke-opacity="0.05" stroke-width="1"/>
+      <line x1="195" y1="0" x2="195" y2="300" stroke="#fff" stroke-opacity="0.05" stroke-width="1"/>
+      <line x1="293" y1="0" x2="293" y2="300" stroke="#fff" stroke-opacity="0.05" stroke-width="1"/>
+      <rect x="0" y="60" width="390" height="18" fill="#1e3550"/>
+      <rect x="0" y="138" width="390" height="18" fill="#1e3550"/>
+      <rect x="78" y="0" width="18" height="300" fill="#1e3550"/>
+      <rect x="176" y="0" width="16" height="300" fill="#1e3550"/>
+      <rect x="276" y="0" width="18" height="300" fill="#1e3550"/>
+      <rect x="0" y="240" width="390" height="60" fill="#0e2238"/>
+      <text x="195" y="275" fill="#1a3a5c" font-size="11" text-anchor="middle" font-family="sans-serif">GWANGALLI SEA</text>
+    </svg>
+
+    <!-- YOU marker -->
+    <div style="position:absolute;left:48%;top:58%;transform:translate(-50%,-50%);">
+      <div style="width:16px;height:16px;background:var(--accent);border-radius:50%;border:3px solid rgba(0,201,167,0.3);box-shadow:0 0 0 8px rgba(0,201,167,0.1);"></div>
+    </div>
+
+    <!-- PIN: nearest (large) -->
+    <div class="pin-dot nearest" style="left:46%;top:38%;" onclick="showRoute('pole7')">
+      <div class="pin-circle" style="width:42px;height:42px;font-size:11px;">P07</div>
+      <div class="pin-stem" style="height:10px;"></div>
+      <div class="pin-label">0.3km ★</div>
+    </div>
+    <!-- PIN 2 -->
+    <div class="pin-dot" style="left:68%;top:25%;" onclick="showRoute('pole3')">
+      <div class="pin-circle" style="width:28px;height:28px;font-size:10px;">P03</div>
+      <div class="pin-stem" style="height:8px;"></div>
+      <div class="pin-label">1.1km</div>
+    </div>
+    <!-- PIN 3 -->
+    <div class="pin-dot" style="left:15%;top:20%;" onclick="showRoute('pole11')">
+      <div class="pin-circle" style="width:26px;height:26px;font-size:10px;">P11</div>
+      <div class="pin-stem" style="height:7px;"></div>
+      <div class="pin-label">2.0km</div>
+    </div>
+    <!-- PIN 4 -->
+    <div class="pin-dot" style="left:78%;top:52%;" onclick="showRoute('pole5')">
+      <div class="pin-circle" style="width:24px;height:24px;font-size:10px;">P05</div>
+      <div class="pin-stem" style="height:6px;"></div>
+      <div class="pin-label">2.4km</div>
+    </div>
+  </div>
+
+  <div class="pins-legend">
+    <div class="legend-large"></div>
+    <span data-t="pins_legend">Larger pin = closer to you. Tap any pin to get directions.</span>
+  </div>
+
+  <div class="pins-list">
+    <div class="pin-list-item nearest-item" onclick="showRoute('pole7')">
+      <div class="pin-num">P07</div>
+      <div class="pin-info">
+        <h5 data-t="pole7_name">Gwangalli Beach Pole #07</h5>
+        <p data-t="pole7_sub">Near CU convenience store · Beach entry</p>
+      </div>
+      <div class="nearest-badge" data-t="nearest">Nearest</div>
+    </div>
+    <div class="pin-list-item" onclick="showRoute('pole3')">
+      <div class="pin-num">P03</div>
+      <div class="pin-info">
+        <h5 data-t="pole3_name">Millak Waterfront Pole #03</h5>
+        <p>1.1 km · Near Millak Raw Fish Center</p>
+      </div>
+    </div>
+    <div class="pin-list-item" onclick="showRoute('pole11')">
+      <div class="pin-num">P11</div>
+      <div class="pin-info">
+        <h5 data-t="pole11_name">Gwangalli Station Pole #11</h5>
+        <p>2.0 km · Metro Line 2 Exit 3</p>
+      </div>
+    </div>
+    <div class="pin-list-item" onclick="showRoute('pole5')">
+      <div class="pin-num">P05</div>
+      <div class="pin-info">
+        <h5 data-t="pole5_name">Marine City Pole #05</h5>
+        <p>2.4 km · Near Haeundae Sky Capsule</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 5: PLACE DETAIL ===== -->
+<div class="screen" id="screen-place">
+  <div class="place-hero" id="place-hero-emoji">
+    🐟
+    <div class="place-hero-overlay"></div>
+    <div class="place-hero-back" onclick="goBack('screen-place')">←</div>
+  </div>
+
+  <div class="place-body">
+    <div class="place-name" id="place-name">Jagalchi Fish Market</div>
+    <div class="place-category" id="place-category">Seafood Market</div>
+
+    <div class="place-stars">
+      <span class="stars-row">★★★★★</span>
+      <span class="stars-val" id="place-rating">4.7</span>
+      <span class="stars-count" id="place-reviews">(2,840 reviews)</span>
+    </div>
+
+    <div class="place-meta-row">
+      <div class="meta-box">
+        <div class="meta-box-label" data-t="hours_lbl">Hours</div>
+        <div class="meta-box-val" id="place-hours">05:00–21:00</div>
+      </div>
+      <div class="meta-box">
+        <div class="meta-box-label" data-t="dist_lbl">Distance</div>
+        <div class="meta-box-val" id="place-dist">1.2 km away</div>
+      </div>
+      <div class="meta-box">
+        <div class="meta-box-label" data-t="crowd_lbl">Crowd</div>
+        <div class="meta-box-val" id="place-crowd"><span class="crowd-badge crowd-mod" data-t="crowd_mod">Moderate</span></div>
+      </div>
+      <div class="meta-box">
+        <div class="meta-box-label" data-t="last_transit">Last Transit</div>
+        <div class="meta-box-val" id="place-transit">Bus 26 · 22:40</div>
+      </div>
+    </div>
+
+    <div class="sec-title-sm" data-t="about_lbl">About</div>
+    <p id="place-about" style="font-size:13px;color:var(--text2);line-height:1.65;font-family:var(--font2);">Jagalchi is South Korea's largest fish market, famous for its fresh hoe (raw fish) served on the 2nd floor restaurant level. Visit early morning for the freshest catch. Tip: Point to the fish you want at ground level, then take it upstairs to eat.</p>
+
+    <div class="sec-title-sm" data-t="photos_lbl">Photos</div>
+    <div class="image-gallery">
+      <div class="gallery-item">🐟</div>
+      <div class="gallery-item">🦑</div>
+      <div class="gallery-item">🦐</div>
+      <div class="gallery-item">🦀</div>
+      <div class="gallery-item">🐙</div>
+    </div>
+
+    <div class="sec-title-sm" id="menu-section-title" data-t="menu_lbl">Popular Menu</div>
+    <div class="menu-list" id="place-menu">
+      <div class="menu-item">
+        <div>
+          <div class="menu-name">Hoe (Raw Fish Platter)</div>
+          <div class="menu-desc">Freshly sliced seasonal fish</div>
+        </div>
+        <div class="menu-price">₩25,000</div>
+      </div>
+      <div class="menu-item">
+        <div>
+          <div class="menu-name">Haemul Jjigae</div>
+          <div class="menu-desc">Spicy seafood stew</div>
+        </div>
+        <div class="menu-price">₩12,000</div>
+      </div>
+      <div class="menu-item">
+        <div>
+          <div class="menu-name">Grilled Crab</div>
+          <div class="menu-desc">Market price · seasonal</div>
+        </div>
+        <div class="menu-price">Market</div>
+      </div>
+    </div>
+
+    <div class="sec-title-sm" data-t="tips_lbl">Local Tips</div>
+    <div style="background:var(--card);border-radius:var(--radius-sm);padding:14px;border:1px solid var(--border);margin-bottom:20px;">
+      <p id="place-tips" style="font-size:13px;color:var(--text2);line-height:1.65;font-family:var(--font2);">🕐 Arrive before 7am for the best selection. 💴 Many stalls accept KakaoPay and card. 👆 Point to fish at ground level — staff will prepare it for you.</p>
+    </div>
+  </div>
+
+  <button class="get-directions-btn" id="directions-btn" onclick="showRouteFromPlace()">
+    <span>🗺</span> <span data-t="get_directions">Get Directions from Pole</span>
+  </button>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ======= TRANSLATION DATA =======
+const T = {
+  en: {
+    choose_lang: 'Choose your language',
+    continue: 'Continue',
+    near: 'Near Gwangalli Beach Pole #07',
+    explore_title: 'Explore Nearby',
+    alert_text: '🎆 Gwangan Bridge Fireworks',
+    alert_sub: 'Starts in 10 mins · 0.3 km away',
+    get_route: '>> Get Route',
+    food_title: '🍜 Food Nearby',
+    see_all: 'See all',
+    haeundae_sub: 'Crowd: Moderate · Wave: 0.5m',
+    gamcheon_sub: 'Art · History · Cafes',
+    beach_tag: 'Beach', culture_tag: 'Culture',
+    temple_title: '⛩ Temples',
+    haedong_sub: 'Coastal sea temple · Open 5am–9pm',
+    beomeosa_sub: 'Historic mountain temple · 1400 yrs old',
+    temple_tag: 'Temple',
+    market_title: '🛒 Markets',
+    gukje_sub: 'Street food · Goods · Open till 8pm',
+    biff_sub: 'Film, street snacks · Night market',
+    market_tag: 'Market',
+    attractions_title: '🏖 Beaches & Attractions',
+    nav_explore: 'Explore', nav_pins: 'Poles', nav_map: 'Map', nav_safety: 'Safety',
+    next_pin: 'Next Pin',
+    walk_time: 'Walk', distance: 'Distance', crowd_lbl: 'Crowd', crowd_mod: 'Moderate',
+    uphill_info: '🔵 Uphill walks: 2 · Last bus: 22:30',
+    open_maps: 'Open in Google Maps',
+    nearby_poles: 'Nearby Poles',
+    pins_legend: 'Larger pin = closer to you. Tap any pin to get directions.',
+    pole7_name: 'Gwangalli Beach Pole #07', pole7_sub: 'Near CU store · Beach entry',
+    pole3_name: 'Millak Waterfront Pole #03',
+    pole11_name: 'Gwangalli Station Pole #11',
+    pole5_name: 'Marine City Pole #05',
+    nearest: 'Nearest',
+    hours_lbl: 'Hours', dist_lbl: 'Distance', last_transit: 'Last Transit',
+    about_lbl: 'About', photos_lbl: 'Photos', menu_lbl: 'Popular Menu', tips_lbl: 'Local Tips',
+    get_directions: 'Get Directions from Pole'
+  },
+  ko: {
+    choose_lang: '언어를 선택하세요',
+    continue: '계속',
+    near: '광안리 해변 폴 #07 근처',
+    explore_title: '주변 탐색',
+    alert_text: '🎆 광안대교 불꽃놀이',
+    alert_sub: '10분 후 시작 · 0.3km 거리',
+    get_route: '>> 경로 보기',
+    food_title: '🍜 주변 음식',
+    see_all: '전체 보기',
+    haeundae_sub: '혼잡도: 보통 · 파고: 0.5m',
+    gamcheon_sub: '예술 · 역사 · 카페',
+    beach_tag: '해변', culture_tag: '문화',
+    temple_title: '⛩ 사찰',
+    haedong_sub: '해안 사찰 · 오전 5시~오후 9시',
+    beomeosa_sub: '산악 사찰 · 1400년 역사',
+    temple_tag: '사찰',
+    market_title: '🛒 시장',
+    gukje_sub: '길거리 음식 · 상품 · 오후 8시까지',
+    biff_sub: '영화, 길거리 간식 · 야시장',
+    market_tag: '시장',
+    attractions_title: '🏖 해변 & 관광지',
+    nav_explore: '탐색', nav_pins: '폴', nav_map: '지도', nav_safety: '안전',
+    next_pin: '다음 폴',
+    walk_time: '도보', distance: '거리', crowd_lbl: '혼잡도', crowd_mod: '보통',
+    uphill_info: '🔵 오르막: 2개 · 막차: 22:30',
+    open_maps: '구글 맵으로 열기',
+    nearby_poles: '주변 폴',
+    pins_legend: '큰 핀 = 당신에게 가장 가까운 곳',
+    pole7_name: '광안리 해변 폴 #07', pole7_sub: 'CU 편의점 근처 · 해변 입구',
+    pole3_name: '민락 수변공원 폴 #03',
+    pole11_name: '광안역 폴 #11',
+    pole5_name: '마린시티 폴 #05',
+    nearest: '가장 가까움',
+    hours_lbl: '영업시간', dist_lbl: '거리', last_transit: '막차',
+    about_lbl: '소개', photos_lbl: '사진', menu_lbl: '인기 메뉴', tips_lbl: '현지 팁',
+    get_directions: '폴에서 경로 안내'
+  },
+  ja: {
+    choose_lang: '言語を選択してください',
+    continue: '続ける',
+    near: '広安里ビーチ ポール #07 付近',
+    explore_title: '周辺を探索',
+    alert_text: '🎆 広安大橋花火大会',
+    alert_sub: '10分後に開始 · 0.3km先',
+    get_route: '>> ルートを見る',
+    food_title: '🍜 近くの食事',
+    see_all: 'すべて見る',
+    haeundae_sub: '混雑度: 普通 · 波高: 0.5m',
+    gamcheon_sub: 'アート · 歴史 · カフェ',
+    beach_tag: 'ビーチ', culture_tag: '文化',
+    temple_title: '⛩ 寺院',
+    haedong_sub: '海岸の寺院 · 午前5時〜午後9時',
+    beomeosa_sub: '山の寺院 · 1400年の歴史',
+    temple_tag: '寺院',
+    market_title: '🛒 マーケット',
+    gukje_sub: 'ストリートフード · 雑貨 · 午後8時まで',
+    biff_sub: '映画、屋台 · ナイトマーケット',
+    market_tag: 'マーケット',
+    attractions_title: '🏖 ビーチ & 観光スポット',
+    nav_explore: '探索', nav_pins: 'ポール', nav_map: '地図', nav_safety: '安全',
+    next_pin: '次のポール',
+    walk_time: '徒歩', distance: '距離', crowd_lbl: '混雑度', crowd_mod: '普通',
+    uphill_info: '🔵 坂道: 2箇所 · 終バス: 22:30',
+    open_maps: 'Googleマップで開く',
+    nearby_poles: '周辺のポール',
+    pins_legend: '大きいピン = あなたに最も近い',
+    pole7_name: '広安里ビーチ ポール #07', pole7_sub: 'CUコンビニ近く · 海岸入口',
+    pole3_name: 'ミルラク水辺公園 ポール #03',
+    pole11_name: '広安駅 ポール #11',
+    pole5_name: 'マリンシティ ポール #05',
+    nearest: '最寄り',
+    hours_lbl: '営業時間', dist_lbl: '距離', last_transit: '最終バス',
+    about_lbl: '概要', photos_lbl: '写真', menu_lbl: '人気メニュー', tips_lbl: 'ローカルTips',
+    get_directions: 'ポールからルート案内'
+  },
+  zh: {
+    choose_lang: '请选择语言',
+    continue: '继续',
+    near: '广安里海滩 电线杆 #07 附近',
+    explore_title: '探索周边',
+    alert_text: '🎆 广安大桥烟花表演',
+    alert_sub: '10分钟后开始 · 距您0.3公里',
+    get_route: '>> 获取路线',
+    food_title: '🍜 附近美食',
+    see_all: '查看全部',
+    haeundae_sub: '拥挤程度: 中等 · 浪高: 0.5m',
+    gamcheon_sub: '艺术 · 历史 · 咖啡',
+    beach_tag: '海滩', culture_tag: '文化',
+    temple_title: '⛩ 寺庙',
+    haedong_sub: '海岸寺庙 · 开放5am–9pm',
+    beomeosa_sub: '山中古刹 · 1400年历史',
+    temple_tag: '寺庙',
+    market_title: '🛒 市场',
+    gukje_sub: '街头小吃 · 商品 · 营业至晚8点',
+    biff_sub: '电影 · 街头小吃 · 夜市',
+    market_tag: '市场',
+    attractions_title: '🏖 海滩 & 景点',
+    nav_explore: '探索', nav_pins: '电线杆', nav_map: '地图', nav_safety: '安全',
+    next_pin: '下一个桩',
+    walk_time: '步行', distance: '距离', crowd_lbl: '拥挤度', crowd_mod: '适中',
+    uphill_info: '🔵 上坡路段: 2处 · 末班车: 22:30',
+    open_maps: '用谷歌地图打开',
+    nearby_poles: '附近电线杆',
+    pins_legend: '图钉越大 = 离您越近',
+    pole7_name: '广安里海滩 桩 #07', pole7_sub: '近CU便利店 · 海滩入口',
+    pole3_name: '民乐水边公园 桩 #03',
+    pole11_name: '广安站 桩 #11',
+    pole5_name: '海洋城市 桩 #05',
+    nearest: '最近',
+    hours_lbl: '营业时间', dist_lbl: '距离', last_transit: '末班车',
+    about_lbl: '简介', photos_lbl: '图片', menu_lbl: '热门菜单', tips_lbl: '本地贴士',
+    get_directions: '从桩出发导航'
+  },
+  de: {
+    choose_lang: 'Sprache wählen',
+    continue: 'Weiter',
+    near: 'In der Nähe von Gwangalli Beach Pol #07',
+    explore_title: 'In der Nähe erkunden',
+    alert_text: '🎆 Gwangan Brücke Feuerwerk',
+    alert_sub: 'Beginnt in 10 Min · 0,3 km entfernt',
+    get_route: '>> Route anzeigen',
+    food_title: '🍜 Essen in der Nähe',
+    see_all: 'Alle sehen',
+    haeundae_sub: 'Andrang: Mittel · Wellen: 0,5m',
+    gamcheon_sub: 'Kunst · Geschichte · Cafés',
+    beach_tag: 'Strand', culture_tag: 'Kultur',
+    temple_title: '⛩ Tempel',
+    haedong_sub: 'Küstentempel · Geöffnet 5–21 Uhr',
+    beomeosa_sub: 'Bergtempel · 1400 Jahre alt',
+    temple_tag: 'Tempel',
+    market_title: '🛒 Märkte',
+    gukje_sub: 'Streetfood · Waren · Bis 20 Uhr',
+    biff_sub: 'Film, Snacks · Nachtmarkt',
+    market_tag: 'Markt',
+    attractions_title: '🏖 Strände & Sehenswürdigkeiten',
+    nav_explore: 'Erkunden', nav_pins: 'Pole', nav_map: 'Karte', nav_safety: 'Sicherheit',
+    next_pin: 'Nächster Pol',
+    walk_time: 'Fußweg', distance: 'Entfernung', crowd_lbl: 'Andrang', crowd_mod: 'Mittel',
+    uphill_info: '🔵 Bergauf: 2 · Letzter Bus: 22:30',
+    open_maps: 'In Google Maps öffnen',
+    nearby_poles: 'Nahe gelegene Pole',
+    pins_legend: 'Größerer Pin = näher an Ihnen',
+    pole7_name: 'Gwangalli Strand Pol #07', pole7_sub: 'Nahe CU Laden · Strandzugang',
+    pole3_name: 'Millak Uferpromenade Pol #03',
+    pole11_name: 'Gwangalli Station Pol #11',
+    pole5_name: 'Marine City Pol #05',
+    nearest: 'Nächster',
+    hours_lbl: 'Öffnungszeiten', dist_lbl: 'Entfernung', last_transit: 'Letzter Bus',
+    about_lbl: 'Über', photos_lbl: 'Fotos', menu_lbl: 'Beliebte Gerichte', tips_lbl: 'Lokale Tipps',
+    get_directions: 'Route vom Pol'
+  },
+  fr: {
+    choose_lang: 'Choisissez votre langue',
+    continue: 'Continuer',
+    near: 'Près du Poteau Gwangalli #07',
+    explore_title: 'Explorer les environs',
+    alert_text: '🎆 Feux d\'artifice Pont Gwangan',
+    alert_sub: 'Commence dans 10 min · à 0,3 km',
+    get_route: '>> Voir l\'itinéraire',
+    food_title: '🍜 Restaurants à proximité',
+    see_all: 'Voir tout',
+    haeundae_sub: 'Affluence: Modérée · Vagues: 0,5m',
+    gamcheon_sub: 'Art · Histoire · Cafés',
+    beach_tag: 'Plage', culture_tag: 'Culture',
+    temple_title: '⛩ Temples',
+    haedong_sub: 'Temple côtier · Ouvert 5h–21h',
+    beomeosa_sub: 'Temple de montagne · 1400 ans',
+    temple_tag: 'Temple',
+    market_title: '🛒 Marchés',
+    gukje_sub: 'Street food · Produits · Ouvert jusqu\'à 20h',
+    biff_sub: 'Cinéma, snacks · Marché nocturne',
+    market_tag: 'Marché',
+    attractions_title: '🏖 Plages & Attractions',
+    nav_explore: 'Explorer', nav_pins: 'Poteaux', nav_map: 'Carte', nav_safety: 'Sécurité',
+    next_pin: 'Prochain Poteau',
+    walk_time: 'À pied', distance: 'Distance', crowd_lbl: 'Affluence', crowd_mod: 'Modérée',
+    uphill_info: '🔵 Montées: 2 · Dernier bus: 22h30',
+    open_maps: 'Ouvrir dans Google Maps',
+    nearby_poles: 'Poteaux à proximité',
+    pins_legend: 'Grand pin = plus proche de vous',
+    pole7_name: 'Poteau Plage Gwangalli #07', pole7_sub: 'Près du magasin CU · Entrée plage',
+    pole3_name: 'Poteau Waterfront Millak #03',
+    pole11_name: 'Poteau Station Gwangalli #11',
+    pole5_name: 'Poteau Marine City #05',
+    nearest: 'Le plus proche',
+    hours_lbl: 'Horaires', dist_lbl: 'Distance', last_transit: 'Dernier bus',
+    about_lbl: 'À propos', photos_lbl: 'Photos', menu_lbl: 'Menu populaire', tips_lbl: 'Conseils locaux',
+    get_directions: 'Itinéraire depuis le poteau'
+  }
+};
+
+// ======= PLACE DATA =======
+const PLACES = {
+  jagalchi: {
+    emoji: '🐟', name: 'Jagalchi Fish Market', category: 'Seafood Market',
+    rating: '4.7', reviews: '2,840 reviews', hours: '05:00–21:00',
+    dist: '1.2 km away', crowd: 'mod', transit: 'Bus 26 · 22:40',
+    about: 'Jagalchi is South Korea\'s largest fish market, famous for fresh hoe (raw fish) on the 2nd floor. Visit early morning for the best selection. Tip: Point to the fish at ground level, staff will prepare it for you.',
+    tips: '🕐 Arrive before 7am for best selection. 💴 KakaoPay & card accepted. 👆 Point to the fish — staff will prepare it for you.',
+    menu: [['Hoe (Raw Fish Platter)', 'Freshly sliced seasonal fish', '₩25,000'], ['Haemul Jjigae', 'Spicy seafood stew', '₩12,000'], ['Grilled Crab', 'Market price · seasonal', 'Market']],
+    routeTime: '18 min', routeDist: '1.2 km', uphill: '🔵 Uphill walks: 1 · Last bus: 22:40'
+  },
+  milmyeon: {
+    emoji: '🍜', name: 'Gaya Milmyeon', category: 'Korean Noodles',
+    rating: '4.8', reviews: '1,420 reviews', hours: '10:00–21:00',
+    dist: '0.7 km away', crowd: 'low', transit: 'Subway L2 · 23:50',
+    about: 'One of Busan\'s most celebrated milmyeon (cold wheat noodle) restaurants. The recipe has been passed down for 3 generations. Locals queue early — arrive before noon to avoid a wait.',
+    tips: '🕐 Come before 12pm or after 2pm to avoid queues. 🍜 The signature cold milmyeon is a must-try. 💳 Cash preferred.',
+    menu: [['Milmyeon (Cold)', 'Cold wheat noodles, Busan style', '₩9,000'], ['Eomuk Guk', 'Fish cake soup', '₩2,000'], ['Bibim Milmyeon', 'Spicy mixed noodles', '₩9,000']],
+    routeTime: '10 min', routeDist: '0.7 km', uphill: '🔵 Flat route · Last subway: 23:50'
+  },
+  pojangmacha: {
+    emoji: '🥘', name: 'Gwangalli Pojangmacha', category: 'Street Food Stalls',
+    rating: '4.5', reviews: '890 reviews', hours: '17:00–02:00',
+    dist: '0.2 km away', crowd: 'high', transit: 'Walk back · 10 min',
+    about: 'Rows of iconic orange tent stalls along the Gwangalli beachfront. Best enjoyed at night with the Gwangan Bridge lit up behind you. Order soju, dried squid, and tteokbokki.',
+    tips: '🌙 Best after 9pm when the bridge lights up. 🍶 Order soju + dried squid combo. 💺 Plastic chairs and tables — very casual.',
+    menu: [['Tteokbokki', 'Spicy rice cake', '₩5,000'], ['Ojingeo (Squid)', 'Dried grilled squid', '₩7,000'], ['Somaek Set', 'Soju + Maekju beer', '₩8,000']],
+    routeTime: '3 min', routeDist: '0.2 km', uphill: '🔵 Flat route · Open till 2am'
+  },
+  haeundae: {
+    emoji: '🏖', name: 'Haeundae Beach', category: 'Beach',
+    rating: '4.6', reviews: '5,200 reviews', hours: 'Always open',
+    dist: '3.1 km away', crowd: 'mod', transit: 'Subway L2 Haeundae · 23:40',
+    about: 'South Korea\'s most famous beach, stretching 1.5km. Summer (July–Aug) brings crowds of up to 1 million visitors on peak days. Outside summer it\'s calm and beautiful. Ocean Safety flag is currently GREEN.',
+    tips: '🌊 Current wave height: 0.5m · Flag: GREEN (safe). 🕒 Sunrise is at 5:48am — worth waking up for. 🏖 West end is quieter than the main area.',
+    menu: [['Sunrise Walk', 'Best 5:45–6:30am', 'Free'], ['Umbrella Rental', 'Peak season', '₩10,000'], ['Jet Ski', 'Near lifeguard station', '₩30,000']],
+    routeTime: '35 min', routeDist: '3.1 km', uphill: '🔵 Subway recommended · L2 Haeundae Stn'
+  },
+  gamcheon: {
+    emoji: '🎨', name: 'Gamcheon Culture Village', category: 'Cultural Attraction',
+    rating: '4.5', reviews: '3,100 reviews', hours: '09:00–18:00',
+    dist: '4.2 km away', crowd: 'mod', transit: 'Bus 2 from Toseong Stn',
+    about: 'Busan\'s "Machu Picchu of Korea" — a hillside village of colourful houses that was once a refugee settlement. Now famous for its street art, murals, and small cafes tucked into narrow alleyways.',
+    tips: '🗺 Buy the treasure map (₩2,000) at the entrance — it marks all the hidden art. 📸 Best photography: 9–11am or 3–5pm light. 👟 Wear comfortable walking shoes — it\'s steep!',
+    menu: [['Stamp Map Passport', 'Self-guided tour kit', '₩2,000'], ['Ssiat Hotteok', 'Seed-filled pancake', '₩1,500'], ['Village Cafe Coffee', 'Various cafes', '₩5,000']],
+    routeTime: '45 min', routeDist: '4.2 km', uphill: '🔵 Very steep · Wear good shoes!'
+  },
+  haedong: {
+    emoji: '⛩', name: 'Haedong Yonggungsa', category: 'Temple',
+    rating: '4.7', reviews: '2,600 reviews', hours: '05:00–21:00',
+    dist: '4.8 km away', crowd: 'low', transit: 'Bus 181 from Haeundae',
+    about: 'One of the few seaside Buddhist temples in Korea, perched dramatically on coastal rocks. Best visited at sunrise or during the Lunar New Year. Temple etiquette: Remove shoes before entering the main hall.',
+    tips: '🙏 Remove shoes before the main hall. 📸 Photography allowed in outer areas only. 🕐 Best at sunrise — arrive before 6am. 🚌 Bus 181 from Haeundae (30 min).',
+    menu: [['Temple Visit', 'Free entry', 'Free'], ['Fortune Telling', 'At inner shrine', '₩3,000'], ['Temple Food', 'Traditional veg meals', '₩8,000']],
+    routeTime: '55 min', routeDist: '4.8 km', uphill: '🔵 Coastal stairs · Flat walking'
+  },
+  beomeosa: {
+    emoji: '🏯', name: 'Beomeosa Temple', category: 'Historic Temple',
+    rating: '4.6', reviews: '1,900 reviews', hours: '09:00–18:00',
+    dist: '4.9 km away', crowd: 'low', transit: 'Metro L1 to Beomeosa Stn',
+    about: 'Founded in 678 AD by the monk Uisang, Beomeosa is one of Korea\'s most important Buddhist temples. Set deep in pine forests on Geumjeong Mountain, it\'s a peaceful retreat from the city.',
+    tips: '🙏 Dress modestly — cover shoulders and knees. 🔇 Speak quietly in the main halls. 🌿 The forest trail from Beomeosa metro is 15 mins uphill and beautiful.',
+    menu: [['Temple Visit', 'Free entry', 'Free'], ['Temple Stay', 'Overnight meditation', '₩70,000'], ['Templefood Lunch', 'Traditional vegetarian', '₩12,000']],
+    routeTime: '60 min', routeDist: '4.9 km', uphill: '🔵 Mountain walk · 15 min uphill from metro'
+  },
+  gukje: {
+    emoji: '🛍', name: 'Gukje International Market', category: 'Traditional Market',
+    rating: '4.4', reviews: '2,100 reviews', hours: '09:00–20:00',
+    dist: '2.3 km away', crowd: 'mod', transit: 'Bus 10 · 21:30',
+    about: 'Busan\'s oldest traditional market, established by Korean War refugees in 1950. Spread across 6 sections selling everything from Korean textiles, tools, and international goods to delicious street food.',
+    tips: '🛍 Section 1: textiles. Section 2: tools and hardware. Section 5: street food. 💴 Bargaining is normal — start at 70% of asking price. 🍱 Try the Gukje special bibimbap (₩8,000).',
+    menu: [['Bibimbap', 'Market-style mixed rice', '₩8,000'], ['Hotteok', 'Sweet pancake', '₩1,500'], ['Soondae', 'Blood sausage', '₩5,000']],
+    routeTime: '25 min', routeDist: '2.3 km', uphill: '🔵 Mostly flat · Bus 10 · 21:30'
+  },
+  biff: {
+    emoji: '🎬', name: 'BIFF Square', category: 'Cultural Market',
+    rating: '4.5', reviews: '1,780 reviews', hours: '10:00–23:00',
+    dist: '2.8 km away', crowd: 'mod', transit: 'Bus 16 · 23:00',
+    about: 'Named after the Busan International Film Festival. This pedestrian street is famous for handprints of film stars, street vendors selling ssiat hotteok, and a lively night atmosphere year-round.',
+    tips: '🎬 Look for celebrity handprints embedded in the pavement. 🥐 The original Ssiat Hotteok stall is at the entrance — always queued. 🌙 Night atmosphere (8–11pm) is the best time to visit.',
+    menu: [['Ssiat Hotteok', 'The original — always queued', '₩1,500'], ['Dak Galbi', 'Spicy stir-fried chicken', '₩12,000'], ['Corn Dog', 'Korean twisted style', '₩3,500']],
+    routeTime: '30 min', routeDist: '2.8 km', uphill: '🔵 Flat · Best at night'
+  }
+};
+
+let currentLang = 'en';
+let currentPlace = null;
+
+// ======= LANGUAGE FUNCTIONS =======
+function selectLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('lang-' + lang).classList.add('selected');
+  currentLang = lang;
+  const btn = document.getElementById('lang-continue-btn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+}
+
+function applyTranslations() {
+  const t = T[currentLang] || T.en;
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const key = el.getAttribute('data-t');
+    if (t[key]) el.textContent = t[key];
+  });
+}
+
+// ======= NAVIGATION =======
+let screenHistory = [];
+
+function showScreen(id, direction = 'forward') {
+  const current = document.querySelector('.screen.active');
+  const next = document.getElementById(id);
+  if (!next || next === current) return;
+
+  if (current) {
+    screenHistory.push(current.id);
+    current.classList.remove('active');
+    current.classList.add('slide-out');
+    setTimeout(() => current.classList.remove('slide-out'), 350);
+  }
+
+  next.classList.add('active');
+  next.classList.add('slide-in');
+  setTimeout(() => next.classList.remove('slide-in'), 350);
+}
+
+function goBack(fromId) {
+  const prev = screenHistory.pop() || 'screen-home';
+  const current = document.getElementById(fromId);
+  const target = document.getElementById(prev);
+  if (!target) return;
+
+  current.classList.remove('active');
+  target.classList.add('active');
+  target.classList.add('slide-back');
+  setTimeout(() => target.classList.remove('slide-back'), 350);
+}
+
+function goHome() {
+  applyTranslations();
+  showScreen('screen-home');
+}
+
+// ======= ROUTE SCREEN =======
+const routeData = {
+  fireworks: { title: '🎆 Gwangan Bridge Fireworks', sub: 'From Pole #07 · Gwangalli Beach', time: '15 min', dist: '0.3 km', crowd: 'mod', uphill: '🔵 Uphill walks: 1 · Last bus: 22:30', gmaps: 'https://maps.google.com/?q=Gwangan+Bridge+Fireworks+Busan' },
+  self: { title: '📍 Pole #07 Map', sub: 'Your current location', time: '—', dist: '—', crowd: 'low', uphill: '🔵 You are here', gmaps: 'https://maps.google.com/?q=Gwangalli+Beach+Busan' },
+  pole7: { title: '📍 Gwangalli Beach Pole #07', sub: 'Nearest pole to you', time: '5 min', dist: '0.3 km', crowd: 'low', uphill: '🔵 Flat route', gmaps: 'https://maps.google.com/?q=Gwangalli+Beach+Busan' },
+  pole3: { title: '📍 Millak Waterfront Pole #03', sub: '1.1 km away', time: '14 min', dist: '1.1 km', crowd: 'low', uphill: '🔵 Flat route', gmaps: 'https://maps.google.com/?q=Millak+Waterfront+Busan' },
+  pole11: { title: '📍 Gwangalli Station Pole #11', sub: '2.0 km away', time: '24 min', dist: '2.0 km', crowd: 'mod', uphill: '🔵 Slight uphill', gmaps: 'https://maps.google.com/?q=Gwangalli+Station+Busan' },
+  pole5: { title: '📍 Marine City Pole #05', sub: '2.4 km away', time: '29 min', dist: '2.4 km', crowd: 'mod', uphill: '🔵 Flat coastal route', gmaps: 'https://maps.google.com/?q=Marine+City+Busan' }
+};
+
+function showRoute(key) {
+  const d = routeData[key] || routeData.fireworks;
+  document.getElementById('map-title').textContent = d.title;
+  document.getElementById('map-subtitle').textContent = d.sub;
+  document.getElementById('route-walk').textContent = d.time;
+  document.getElementById('route-dist').textContent = d.dist;
+  document.getElementById('uphill-info').textContent = d.uphill;
+  const crowdEl = document.getElementById('route-crowd');
+  crowdEl.innerHTML = d.crowd === 'low'
+    ? '<span class="crowd-badge crowd-low">Low</span>'
+    : d.crowd === 'mod'
+    ? '<span class="crowd-badge crowd-mod">Moderate</span>'
+    : '<span class="crowd-badge crowd-high">Busy</span>';
+  window._currentGmaps = d.gmaps;
+  showScreen('screen-map');
+}
+
+function showRouteFromPlace() {
+  if (currentPlace) {
+    const p = PLACES[currentPlace];
+    showRoute(currentPlace in routeData ? currentPlace : 'fireworks');
+    const d = { title: '🗺 Route to ' + p.name, sub: 'From Pole #07 · Gwangalli', time: p.routeTime, dist: p.routeDist, crowd: p.crowd, uphill: p.uphill, gmaps: 'https://maps.google.com/?q=' + encodeURIComponent(p.name + ' Busan') };
+    document.getElementById('map-title').textContent = d.title;
+    document.getElementById('map-subtitle').textContent = d.sub;
+    document.getElementById('route-walk').textContent = d.time;
+    document.getElementById('route-dist').textContent = d.dist;
+    document.getElementById('uphill-info').textContent = d.uphill;
+    window._currentGmaps = d.gmaps;
+    showScreen('screen-map');
+  }
+}
+
+function openGmaps() {
+  const url = window._currentGmaps || 'https://maps.google.com/?q=Busan+South+Korea';
+  window.open(url, '_blank');
+}
+
+// ======= NEARBY PINS =======
+function showPins() {
+  showScreen('screen-pins');
+}
+
+// ======= PLACE DETAIL =======
+function showPlace(key) {
+  const p = PLACES[key];
+  if (!p) return;
+  currentPlace = key;
+
+  document.getElementById('place-hero-emoji').childNodes[0].textContent = p.emoji;
+  document.getElementById('place-name').textContent = p.name;
+  document.getElementById('place-category').textContent = p.category;
+  document.getElementById('place-rating').textContent = p.rating;
+  document.getElementById('place-reviews').textContent = '(' + p.reviews + ')';
+  document.getElementById('place-hours').textContent = p.hours;
+  document.getElementById('place-dist').textContent = p.dist;
+  document.getElementById('place-transit').textContent = p.transit;
+  document.getElementById('place-about').textContent = p.about;
+  document.getElementById('place-tips').textContent = p.tips;
+
+  const crowdEl = document.getElementById('place-crowd');
+  crowdEl.innerHTML = p.crowd === 'low'
+    ? '<span class="crowd-badge crowd-low">Low</span>'
+    : p.crowd === 'mod'
+    ? '<span class="crowd-badge crowd-mod">Moderate</span>'
+    : '<span class="crowd-badge crowd-high">Busy</span>';
+
+  const menu = document.getElementById('place-menu');
+  menu.innerHTML = p.menu.map(([n, d, pr]) =>
+    `<div class="menu-item"><div><div class="menu-name">${n}</div><div class="menu-desc">${d}</div></div><div class="menu-price">${pr}</div></div>`
+  ).join('');
+
+  const menuTitle = document.getElementById('menu-section-title');
+  if (['haeundae','gamcheon','haedong','beomeosa'].includes(key)) {
+    menuTitle.textContent = 'Visit Info';
+  } else {
+    menuTitle.textContent = 'Popular Menu';
+  }
+
+  document.getElementById('screen-place').scrollTop = 0;
+  showScreen('screen-place');
+}
+
+// ======= INIT =======
+document.addEventListener('DOMContentLoaded', () => {
+  applyTranslations();
+});
+</script>
+</body>
+</html>
